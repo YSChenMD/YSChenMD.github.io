@@ -35,7 +35,20 @@
 <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <title>Yi-Syuan Chen</title>
-<script>document.documentElement.classList.add('js');</script>
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add('js');
+    var dark = false;
+    try {
+      var saved = localStorage.getItem('theme');
+      dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch (e) {}
+    d.setAttribute('data-theme', dark ? 'dark' : 'light');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', dark ? '#0e1620' : '#3B8ED1');
+  })();
+</script>
 <meta name="description" content="Yi-Syuan Chen (陳奕瑄) — post-baccalaureate medical student and biomedical engineer focused on medical-device innovation, pediatric orthopaedics, and neonatal care.">
 <!-- Favicons & app icons (PWA icons declared in manifest.webmanifest) -->
 <link rel="icon" href="/favicon.ico" sizes="32x32">
@@ -47,6 +60,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Hanken+Grotesk:wght@300..800&display=swap" rel="stylesheet">
 <style>
 :root {
+  color-scheme: light;
   --bg: #f1f7fc;
   --surface: #ffffff;
   --surface-blue: #e8f2fb;
@@ -63,6 +77,87 @@
   --maxw: 1120px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+
+/* ===================================================================
+   DARK THEME
+   Enabled by [data-theme="dark"] on <html> — set before first paint by
+   the inline script in <head>, toggled via the .theme-toggle button, and
+   remembered in localStorage. Tokens are remapped below; the few filled,
+   white-text elements (badge, primary button, contact card, mobile email)
+   are overridden so they stay saturated and legible on a dark surface.
+   =================================================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1620;
+  --surface: #18222e;
+  --surface-blue: #1b2a3a;
+  --ink: #e9eff5;
+  --ink-soft: #aebccb;
+  --muted: #8597a8;
+  --sky: #5aa6e6;
+  --sky-deep: #7cc0f0;
+  --sky-bright: #9bcdf4;
+  --teal: #5cc3cd;
+  --azure: #2c4257;
+  --line: #243240;
+  --shadow-sky: rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] body::before {
+  background:
+    radial-gradient(900px 600px at 85% -5%, rgba(59, 142, 209, 0.14), transparent 60%),
+    radial-gradient(800px 700px at -10% 25%, rgba(28, 104, 166, 0.1), transparent 55%),
+    radial-gradient(700px 600px at 50% 110%, rgba(40, 90, 140, 0.16), transparent 60%),
+    var(--bg);
+}
+[data-theme="dark"] body::after {
+  mix-blend-mode: screen;
+  opacity: 0.05;
+}
+[data-theme="dark"] header.nav.scrolled {
+  background: rgba(14, 22, 32, 0.82);
+}
+[data-theme="dark"] header.nav.menu-open {
+  background: rgba(14, 22, 32, 0.95);
+}
+[data-theme="dark"] nav.links {
+  background: rgba(14, 22, 32, 0.98);
+}
+[data-theme="dark"] .brand .mono {
+  background: linear-gradient(135deg, #3b8ed1, #1c68a6);
+}
+[data-theme="dark"] .btn-primary {
+  background: #1c68a6;
+}
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 0 20px 34px -14px rgba(0, 0, 0, 0.55);
+}
+[data-theme="dark"] .portrait {
+  border-color: #21303f;
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] .portrait-blob {
+  background: linear-gradient(150deg, #3b8ed1, #1c68a6 60%, #10283c);
+  opacity: 0.4;
+}
+[data-theme="dark"] .tl-item::before {
+  background: var(--bg);
+}
+[data-theme="dark"] .tag:hover {
+  background: #2f7fc4;
+  color: #fff;
+}
+[data-theme="dark"] .type-oral {
+  background: rgba(214, 160, 108, 0.16);
+  color: #e3b083;
+}
+[data-theme="dark"] .contact-card {
+  background: linear-gradient(135deg, #175a92, #2073b5);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] nav.links .menu-email {
+  background: #1c68a6;
+}
+
 
 * {
   margin: 0;
@@ -258,6 +353,58 @@ header.nav.menu-open {
   box-shadow:
     0 1px 0 var(--line),
     0 10px 30px -22px var(--shadow-sky);
+}
+
+/* ---------- THEME TOGGLE ---------- */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  transition:
+    color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+.theme-toggle:hover {
+  color: var(--sky-deep);
+  border-color: var(--azure);
+  transform: translateY(-1px);
+}
+.theme-toggle svg {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.45s var(--ease);
+}
+.theme-toggle .moon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+.theme-toggle .sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+[data-theme="dark"] .theme-toggle .moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+[data-theme="dark"] .theme-toggle .sun {
+  opacity: 1;
+  transform: rotate(0) scale(1);
 }
 
 /* ---------- HERO ---------- */
@@ -1158,7 +1305,8 @@ footer.foot {
       <span class="mono" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 37.5C24 37.5 8.5 28.2 8.5 18.4C8.5 12.8 12.6 9.3 16.9 9.3C19.8 9.3 22.5 11.1 24 13.7C25.5 11.1 28.2 9.3 31.1 9.3C35.4 9.3 39.5 12.8 39.5 18.4C39.5 28.2 24 37.5 24 37.5Z" fill="#fff"/><path d="M12.5 21.5H19L21.5 16.5L24.5 26L27 21.5H35.5" fill="none" stroke="#1C68A6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       Yi-Syuan Chen <span class="zh">陳奕瑄</span>
     </a>
-    <nav class="links" id="nav-menu">
+    <div class="nav-right">
+      <nav class="links" id="nav-menu">
       <a href="#about">About</a>
       <a href="#education">Education</a>
       <a href="#experience">Experience</a>
@@ -1169,9 +1317,14 @@ footer.foot {
       <a href="#contact">Contact</a>
       <a href="mailto:s112086014@mail.nchu.edu.tw" class="menu-email">Email me</a>
     </nav>
-    <button class="nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
+          <button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <button class="nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-menu">
       <span></span><span></span><span></span>
     </button>
+      </div>
   </div>
 </header>
 
@@ -1601,6 +1754,40 @@ const spy = new IntersectionObserver(
   { rootMargin: '-45% 0px -50% 0px' },
 );
 sections.forEach((s) => spy.observe(s));
+</script>
+<script>
+  // Dark / light theme toggle
+  (function () {
+    var root = document.documentElement;
+    var btn = document.querySelector('.theme-toggle');
+    var meta = document.querySelector('meta[name="theme-color"]');
+    var COLORS = { light: '#3B8ED1', dark: '#0e1620' };
+    function mode() {
+      return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+    function sync(m) {
+      if (meta) meta.setAttribute('content', COLORS[m]);
+      if (btn) btn.setAttribute('aria-pressed', m === 'dark' ? 'true' : 'false');
+    }
+    sync(mode());
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var next = mode() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        sync(next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+    }
+    try {
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        if (!localStorage.getItem('theme')) {
+          var m = e.matches ? 'dark' : 'light';
+          root.setAttribute('data-theme', m);
+          sync(m);
+        }
+      });
+    } catch (e) {}
+  })();
 </script>
 </body>
 </html>
