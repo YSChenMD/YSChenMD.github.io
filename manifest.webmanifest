@@ -1,0 +1,21 @@
+{
+  "name": "Yi-Syuan Chen",
+  "short_name": "Yi-Syuan Chen",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#3B8ED1",
+  "background_color": "#F1F7FC",
+  "display": "standalone"
+}
