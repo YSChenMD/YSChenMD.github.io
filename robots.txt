@@ -6,7 +6,9 @@
 # scraper can ignore it entirely.
 
 # --- Everything: block all crawlers not named below ---
+# Exception: allow ONLY the icon used for link-preview (Open Graph) thumbnails.
 User-agent: *
+Allow: /icon-512.png
 Disallow: /
 
 # --- Search engines (explicit) ---
