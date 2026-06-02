@@ -142,6 +142,12 @@
 [data-theme="dark"] .tl-item::before {
   background: var(--bg);
 }
+[data-theme="dark"] .award {
+  background: linear-gradient(135deg, var(--surface), var(--surface-blue));
+}
+[data-theme="dark"] .clink:hover {
+  color: #1c68a6;
+}
 [data-theme="dark"] .tag:hover {
   background: #2f7fc4;
   color: #fff;
@@ -1302,7 +1308,7 @@ footer.foot {
 <header class="nav" id="nav">
   <div class="wrap nav-inner">
     <a href="#top" class="brand">
-      <span class="mono" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 37.5C24 37.5 8.5 28.2 8.5 18.4C8.5 12.8 12.6 9.3 16.9 9.3C19.8 9.3 22.5 11.1 24 13.7C25.5 11.1 28.2 9.3 31.1 9.3C35.4 9.3 39.5 12.8 39.5 18.4C39.5 28.2 24 37.5 24 37.5Z" fill="#fff"/><path d="M12.5 21.5H19L21.5 16.5L24.5 26L27 21.5H35.5" fill="none" stroke="#1C68A6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="mono" aria-hidden="true"><svg viewBox="0 0 48 48"><g transform="translate(0 0.6)"><path d="M24 37.5C24 37.5 8.5 28.2 8.5 18.4C8.5 12.8 12.6 9.3 16.9 9.3C19.8 9.3 22.5 11.1 24 13.7C25.5 11.1 28.2 9.3 31.1 9.3C35.4 9.3 39.5 12.8 39.5 18.4C39.5 28.2 24 37.5 24 37.5Z" fill="#fff"/><path d="M12.5 21.5H19L21.5 16.5L24.5 26L27 21.5H35.5" fill="none" stroke="#1C68A6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
       Yi-Syuan Chen <span class="zh">陳奕瑄</span>
     </a>
     <div class="nav-right">
@@ -1778,13 +1784,14 @@ sections.forEach((s) => spy.observe(s));
         try { localStorage.setItem('theme', next); } catch (e) {}
       });
     }
+    // Always follow the device when its light/dark setting changes
+    // (a device change overrides and forgets any manual toggle choice).
     try {
       matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-        if (!localStorage.getItem('theme')) {
-          var m = e.matches ? 'dark' : 'light';
-          root.setAttribute('data-theme', m);
-          sync(m);
-        }
+        var m = e.matches ? 'dark' : 'light';
+        try { localStorage.removeItem('theme'); } catch (e2) {}
+        root.setAttribute('data-theme', m);
+        sync(m);
       });
     } catch (e) {}
   })();
