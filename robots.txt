@@ -1,17 +1,54 @@
-# robots.txt — disallow all crawling, indexing, and AI use of this site.
+# robots.txt — block search indexing & AI use of this site; permit ONLY link-preview bots.
 #
-# This is the Robots Exclusion standard (RFC 9309). Compliant crawlers
-# (Google, Bing, OpenAI, Anthropic, Apple, Perplexity, etc.) honor it,
-# but it is a request, not a firewall: a non-compliant or malicious
-# scraper can ignore it entirely.
+# Robots Exclusion standard (RFC 9309). Compliant bots honor this file; it is a REQUEST,
+# not a firewall — a non-compliant scraper can ignore it. The profile photo (og-image.*)
+# lives at a public URL: this file asks search engines + AI crawlers NOT to take it, and
+# asks social/chat link-preview unfurlers TO fetch it so shared links show the photo.
+#
+# Note: link previews on Meta apps, X/Twitter, LinkedIn, Discord and Slack only work if
+# their unfurler is allowed below — those bots obey robots.txt, and a blanket Disallow
+# (even with a single image Allow) blocks the preview because they must read the page
+# HTML first. Telegram / iMessage / Signal preview regardless of this file.
+#
+# For a hard "do not index this image" guarantee you would also serve og-image with an
+# "X-Robots-Tag: noindex" response header (honored by Google AND facebookexternalhit).
+# GitHub Pages cannot set headers; that needs a proxy/CDN (e.g. Cloudflare) in front, or
+# a host with a _headers file (Cloudflare Pages / Netlify).
 
-# --- Everything: block all crawlers not named below ---
-# Exception: allow ONLY the image used for link-preview (Open Graph) thumbnails.
-User-agent: *
-Allow: /og-image.png
-Disallow: /
+# ─────────────────────────────────────────────────────────────────────────────
+# LINK-PREVIEW / UNFURL BOTS — ALLOWED (this is what shows your photo when you
+# share the URL in chats/social). They fetch on demand to build a preview card;
+# they are NOT the search/AI indexers, which are blocked further down. Allowing
+# the whole site lets them read the page's Open Graph tags and fetch og-image in
+# ANY format — png, jpg, or webp (so a future format switch is already cleared).
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: facebookexternalhit
+Allow: /
 
-# --- Search engines (explicit) ---
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SEARCH ENGINES — BLOCKED (no page or image indexing)
+# ─────────────────────────────────────────────────────────────────────────────
 User-agent: Googlebot
 Disallow: /
 
@@ -36,7 +73,17 @@ Disallow: /
 User-agent: YandexBot
 Disallow: /
 
-# --- AI / LLM crawlers: training, search, and user-triggered retrieval ---
+User-agent: Applebot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AI / LLM CRAWLERS (training, search, user-triggered retrieval) — BLOCKED
+# Note: FacebookBot / meta-externalagent are Meta's CRAWLERS (blocked); they are
+# distinct from facebookexternalhit, the link-preview bot allowed above.
+# ─────────────────────────────────────────────────────────────────────────────
 User-agent: GPTBot
 Disallow: /
 
@@ -76,13 +123,13 @@ Disallow: /
 User-agent: Amazonbot
 Disallow: /
 
-User-agent: Applebot
-Disallow: /
-
-User-agent: Applebot-Extended
+User-agent: meta-externalagent
 Disallow: /
 
 User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
 Disallow: /
 
 User-agent: FacebookBot
@@ -107,4 +154,10 @@ User-agent: ImagesiftBot
 Disallow: /
 
 User-agent: Omgilibot
+Disallow: /
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EVERYONE ELSE — BLOCKED
+# ─────────────────────────────────────────────────────────────────────────────
+User-agent: *
 Disallow: /
